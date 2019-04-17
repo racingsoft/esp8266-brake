@@ -1,15 +1,53 @@
 /*
  Name:		brake.ino
  Created:	17/04/2019 19:55:58
- Author:	racin
+ Author:	Ruben Castro
 */
 
-// the setup function runs once when you press reset or power the board
-void setup() {
+#include <MCP41xxx.h>
+#include <HX711.h>
 
+// HX711 circuit wiring
+const int LOADCELL_DOUT_PIN = 2;
+const int LOADCELL_SCK_PIN = 3;
+// MCP41xxx wiring
+const int SS_MCP41010_PIN = 10;
+
+HX711 scale;
+MCP41xxx dac(SS_MCP41010_PIN);
+
+void setup() {
+	Serial.begin(57600);
+	scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+	dac.begin();
 }
 
-// the loop function runs over and over again until power down or reset
 void loop() {
-  
+	if (scale.is_ready()) {
+		long reading = scale.read();
+		Serial.print("HX711 reading: ");
+		Serial.println(reading);
+	}
+	else {
+		Serial.println("HX711 not found.");
+	}
+
+	Serial.println("MCP41010: 0");
+	dac.analogWrite(0);
+	delay(5000);
+	Serial.println("MCP41010: 100");
+	dac.analogWrite(100);
+	delay(5000);
+	Serial.println("MCP41010: 150");
+	dac.analogWrite(150);
+	delay(5000);
+	Serial.println("MCP41010: 200");
+	dac.analogWrite(200);
+	delay(5000);
+	Serial.println("MCP41010: 255");
+	dac.analogWrite(255);
+	delay(5000);
+	Serial.println("MCP41010: 270");
+	dac.analogWrite(270);
+	delay(5000);
 }
