@@ -44,6 +44,9 @@ local.properties
 # Visual Studio 2015 cache/options directory
 .vs/
 
+# Visual Micro cache/options directory
+__vm/
+
 # Build results
 [Dd]ebug/
 [Rr]elease/
