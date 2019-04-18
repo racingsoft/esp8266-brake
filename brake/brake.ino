@@ -4,14 +4,16 @@
  Author:	Ruben Castro
 */
 
+#include "Graphic.h"
+#include "Display.h"
 #include <MCP41xxx.h>
 #include <HX711.h>
 
 // HX711 circuit wiring
-const int LOADCELL_DOUT_PIN = 2;
-const int LOADCELL_SCK_PIN = 3;
+const int LOADCELL_DOUT_PIN = D5;
+const int LOADCELL_SCK_PIN = D6;
 // MCP41xxx wiring
-const int SS_MCP41010_PIN = 10;
+const int SS_MCP41010_PIN = D8;
 
 HX711 scale;
 MCP41xxx dac(SS_MCP41010_PIN);
