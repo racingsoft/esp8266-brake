@@ -4,7 +4,10 @@
 
 #include "Display.h"
 
-SH1106Wire display(0x3c, D2, D1, GEOMETRY_128_64);
+const uint8_t SDA_PIN = D2;
+const uint8_t SCL_PIN = D1;
+
+SH1106Wire display(0x3c, SDA_PIN, SCL_PIN, GEOMETRY_128_64);
 
 void DisplayClass::init()
 {

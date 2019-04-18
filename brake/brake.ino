@@ -10,8 +10,8 @@
 #include <HX711.h>
 
 // HX711 circuit wiring
-const int LOADCELL_DOUT_PIN = D5;
-const int LOADCELL_SCK_PIN = D6;
+const int LOADCELL_DOUT_PIN = D3;
+const int LOADCELL_SCK_PIN = D4;
 // MCP41xxx wiring
 const int SS_MCP41010_PIN = D8;
 
@@ -20,6 +20,8 @@ MCP41xxx dac(SS_MCP41010_PIN);
 
 void setup() {
 	Serial.begin(57600);
+	Display.init();
+	Display.showWellcome();
 	scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 	dac.begin();
 }
