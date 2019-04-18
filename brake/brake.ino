@@ -4,54 +4,50 @@
  Author:	Ruben Castro
 */
 
+#include "BrakeOutput.h"
+#include "BrakeSensor.h"
 #include "Graphic.h"
 #include "Display.h"
-#include <MCP41xxx.h>
-#include <HX711.h>
 
-// HX711 circuit wiring
-const int LOADCELL_DOUT_PIN = D3;
-const int LOADCELL_SCK_PIN = D4;
-// MCP41xxx wiring
-const int SS_MCP41010_PIN = D8;
-
-HX711 scale;
-MCP41xxx dac(SS_MCP41010_PIN);
+typedef enum { INITIALIZING, CALIBRATING, WORKING } states;
+states brakeState;
 
 void setup() {
-	Serial.begin(57600);
+	
+	brakeState = INITIALIZING;
+
+	Serial.begin(115200);
+	
 	Display.init();
 	Display.showWellcome();
-	scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-	dac.begin();
+	
+	BrakeSensor.init();
+	BrakeOutput.init();
+
+	brakeState = WORKING;
 }
 
 void loop() {
-	if (scale.is_ready()) {
-		long reading = scale.read();
-		Serial.print("HX711 reading: ");
-		Serial.println(reading);
-	}
-	else {
-		Serial.println("HX711 not found.");
+	
+	switch (brakeState)
+	{
+	case CALIBRATING:
+		Serial.printf("Calibrando... %d\n", millis());
+		BrakeSensor.doCalibration();
+		break;
+	
+	case WORKING:
+		Serial.printf("Lectura de sensor...\n");
+		int brakeValue = BrakeSensor.read();
+		Serial.printf("Sensor: %d\n", brakeValue);
+		BrakeOutput.setOutput(brakeValue);
+		break;
 	}
 
-	Serial.println("MCP41010: 0");
-	dac.analogWrite(0);
-	delay(5000);
-	Serial.println("MCP41010: 100");
-	dac.analogWrite(100);
-	delay(5000);
-	Serial.println("MCP41010: 150");
-	dac.analogWrite(150);
-	delay(5000);
-	Serial.println("MCP41010: 200");
-	dac.analogWrite(200);
-	delay(5000);
-	Serial.println("MCP41010: 255");
-	dac.analogWrite(255);
-	delay(5000);
-	Serial.println("MCP41010: 270");
-	dac.analogWrite(270);
-	delay(5000);
+	if (BrakeSensor.isCalibrated())
+	{
+		brakeState = WORKING;
+	}
+
+	delay(100);
 }
