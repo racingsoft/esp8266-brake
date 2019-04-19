@@ -50,5 +50,4 @@ void loop() {
 		Logger.info("WORKING");
 		brakeState = WORKING;
 	}
-	delay(10);
 }
