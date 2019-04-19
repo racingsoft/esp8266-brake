@@ -53,24 +53,32 @@ uint16_t BrakeSensorClass::read()
 	}
 
 	// Reading Double value
-	double v = presionSensor.get_value(10);
-	Logger.info("Double value: " + String(v));
+	currentDoubleValue = presionSensor.get_value(10);
+	if (previousDoubleValue != currentDoubleValue)
+	{
+		previousDoubleValue = currentDoubleValue;
+		Logger.info("Double value: " + String(currentDoubleValue));
+	}
 
 	// Reading uint16_t value
 	long value = presionSensor.read_average(10);
 	
 	// Mapping value to 0 254 range
-	uint16_t mapValue = (uint16_t)map(value, minValue, maxValue, 0, 254);
+	currentValue = (uint16_t)map(value, minValue, maxValue, 0, 254);
 
-	if (mapValue < 0)
-		mapValue = 0;
+	if (currentValue < 0)
+		currentValue = 0;
 
-	if (mapValue > 254)
-		mapValue = 254;
-		
-	Logger.info("Mapped value: " + String(mapValue));
+	if (currentValue > 254)
+		currentValue = 254;
 
-	return mapValue;
+	if (currentValue != previousValue)
+	{
+		previousValue = currentValue;
+		Logger.info("Mapped value: " + String(currentValue));
+	}
+
+	return currentValue;
 }
 
 BrakeSensorClass BrakeSensor;

@@ -29,6 +29,10 @@ class BrakeSensorClass
 private:
 	long minValue;
 	long maxValue;
+	double currentDoubleValue;
+	double previousDoubleValue;
+	uint16_t currentValue;
+	uint16_t previousValue;
 	bool calibrationDone;
 };
 
