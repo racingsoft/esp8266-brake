@@ -37,17 +37,16 @@ void loop() {
 	case CALIBRATING:
 		Logger.info("CALIBRATING");
 		BrakeSensor.doCalibration();
+		if (BrakeSensor.isCalibrated())
+		{
+			Logger.info("WORKING");
+			brakeState = WORKING;
+		}
 		break;
 	
 	case WORKING:
 		uint16_t brakeValue = BrakeSensor.read();
 		BrakeOutput.setOutput(brakeValue);
 		break;
-	}
-
-	if (brakeState == CALIBRATING && BrakeSensor.isCalibrated())
-	{
-		Logger.info("WORKING");
-		brakeState = WORKING;
 	}
 }
