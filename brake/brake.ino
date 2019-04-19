@@ -10,13 +10,11 @@
 #include "Graphic.h"
 #include "Display.h"
 
-typedef enum { INITIALIZING, CALIBRATING, WORKING } states;
+typedef enum { CALIBRATING, WORKING } states;
 states brakeState;
 
 void setup() {
 	
-	brakeState = INITIALIZING;
-
 	Logger.init();
 
 	Logger.info("INITIALIZING DISPLAY");
@@ -29,7 +27,6 @@ void setup() {
 	Logger.info("INITIALIZING BRAKEOUTPUT");
 	BrakeOutput.init();
 
-	Logger.info("CALIBRATING");
 	brakeState = CALIBRATING;
 }
 
@@ -38,6 +35,7 @@ void loop() {
 	switch (brakeState)
 	{
 	case CALIBRATING:
+		Logger.info("CALIBRATING");
 		BrakeSensor.doCalibration();
 		break;
 	
