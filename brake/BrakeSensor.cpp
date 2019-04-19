@@ -50,7 +50,7 @@ uint16_t BrakeSensorClass::read()
 	}
 
 	// Reading uint16_t value
-	currentValue = presionSensor.read_average(3);
+	currentValue = presionSensor.read();
 		
 	// Mapping value to 0 254 range
 	currentMappedValue = (uint16_t)map(currentValue, minValue, maxValue, 0, 254);
