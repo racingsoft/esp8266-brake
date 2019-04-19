@@ -9,8 +9,6 @@ HX711 presionSensor;
 void BrakeSensorClass::init()
 {
 	presionSensor.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-	minValue = 180000;
-	maxValue = 3100000;
 	calibrationDone = false;	
 }
 
@@ -33,6 +31,10 @@ void BrakeSensorClass::doCalibration()
 	Logger.info("Calibration value (scale): " + String(scale));
 	double value = presionSensor.get_units(10);
 	Logger.info("Calibration value (units): " + String(value));
+
+	minValue = offset;
+	maxValue = LOADCELL_MAXVALUE;
+
 	calibrationDone = true;
 }
 
