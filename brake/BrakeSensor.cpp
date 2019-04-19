@@ -16,18 +16,19 @@ void BrakeSensorClass::init()
 
 void BrakeSensorClass::doCalibration()
 {
-	if (presionSensor.wait_ready_timeout(1000))
-	{
-		presionSensor.set_scale();
-		presionSensor.tare();
-		double value = presionSensor.get_value(10);
-		Logger.info("Calibration value: " + String(value));
-		calibrationDone = true;
-	}
-	else
+	// Check sensor
+	if (!presionSensor.wait_ready_timeout(1000))
 	{
 		Logger.error("Brake sensor not found");
+		return;
 	}
+
+	// Calibration
+	presionSensor.set_scale();
+	presionSensor.tare();
+	double value = presionSensor.get_value(10);
+	Logger.info("Calibration value: " + String(value));
+	calibrationDone = true;
 }
 
 bool BrakeSensorClass::isCalibrated()
@@ -37,26 +38,39 @@ bool BrakeSensorClass::isCalibrated()
 
 uint16_t BrakeSensorClass::read()
 {
-	if (calibrationDone && presionSensor.is_ready())
+	// Check sensor
+	if (!presionSensor.wait_ready_timeout(1000))
 	{
-		double v = presionSensor.get_value(10);
-		Logger.info("Double value: " + String(v));
-
-		long value = presionSensor.read_average(10);
-		uint16_t mapValue = (uint16_t)map(value, minValue, maxValue, 0, 254);
-
-		if (mapValue < 0)
-			mapValue = 0;
-
-		if (mapValue > 254)
-			mapValue = 254;
-		
-		Logger.info("Uint16_t value: " + String(mapValue));
-
-		return mapValue;
+		Logger.error("Brake sensor not found");
+		return 0;
 	}
 
-	return 0;
+	// Check calibration
+	if (!calibrationDone)
+	{
+		Logger.error("Brake sensor not calibrated");
+		return 0;
+	}
+
+	// Reading Double value
+	double v = presionSensor.get_value(10);
+	Logger.info("Double value: " + String(v));
+
+	// Reading uint16_t value
+	long value = presionSensor.read_average(10);
+	
+	// Mapping value to 0 254 range
+	uint16_t mapValue = (uint16_t)map(value, minValue, maxValue, 0, 254);
+
+	if (mapValue < 0)
+		mapValue = 0;
+
+	if (mapValue > 254)
+		mapValue = 254;
+		
+	Logger.info("Mapped value: " + String(mapValue));
+
+	return mapValue;
 }
 
 BrakeSensorClass BrakeSensor;
