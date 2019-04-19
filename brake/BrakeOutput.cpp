@@ -15,7 +15,7 @@ void BrakeOutputClass::init()
 void BrakeOutputClass::setOutput(uint16_t value)
 {	
 	outputDac.analogWrite(value);
-	delayMicroseconds(100);
+	delay(100);
 }
 
 void BrakeOutputClass::shutdownOutput()
