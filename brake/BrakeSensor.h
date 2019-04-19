@@ -16,7 +16,7 @@
 const int LOADCELL_DOUT_PIN = D3;
 const int LOADCELL_SCK_PIN = D4;
 
-// HX711 calibration
+// HX711 manual calibration
 const long LOADCELL_OFFSET = 191498;
 const long LOADCELL_MAXVALUE = 2500000;
 
