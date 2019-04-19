@@ -47,11 +47,11 @@ void loop() {
 		break;
 	}
 
-	if (BrakeSensor.isCalibrated())
+	if (brakeState == CALIBRATING && BrakeSensor.isCalibrated())
 	{
 		Logger.info("WORKING");
 		brakeState = WORKING;
 	}
 
-	delay(100);
+	delay(1000);
 }

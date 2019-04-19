@@ -26,6 +26,11 @@ void BrakeSensorClass::doCalibration()
 	// Calibration
 	presionSensor.set_scale();
 	presionSensor.tare();
+	
+	long offset = presionSensor.get_offset();
+	Logger.info("Calibration value (offset): " + String(offset));
+	long scale = presionSensor.get_scale();
+	Logger.info("Calibration value (scale): " + String(scale));
 	double value = presionSensor.get_units(10);
 	Logger.info("Calibration value (units): " + String(value));
 	calibrationDone = true;
