@@ -9,7 +9,7 @@ MCP41xxx outputDac(SS_MCP41010_PIN);
 void BrakeOutputClass::init()
 {
 	outputDac.begin();
-	shutdownOutput();
+	setOutput(0);
 }
 
 void BrakeOutputClass::setOutput(uint16_t value)
