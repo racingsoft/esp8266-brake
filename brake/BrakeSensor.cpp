@@ -16,7 +16,7 @@ void BrakeSensorClass::init()
 void BrakeSensorClass::doCalibration()
 {
 	// Calibration
-	if (presionSensor.is_ready())
+	if (presionSensor.wait_ready_timeout(1000))
 	{
 		currentValue = presionSensor.read_average(10);
 		Logger.info("Value: " + String(currentValue));
@@ -42,23 +42,16 @@ bool BrakeSensorClass::isCalibrated()
 uint16_t BrakeSensorClass::read()
 {
 	// Reading uint16_t value
-	if (presionSensor.is_ready())
-	{
-		currentValue = presionSensor.read();
+	currentValue = presionSensor.read();
 
-		// Mapping value to 0 254 range
-		currentMappedValue = (uint16_t)map(currentValue, minValue, maxValue, 0, 254);
+	// Mapping value to 0 254 range
+	currentMappedValue = (uint16_t)map(currentValue, minValue, maxValue, 0, 254);
 
-		if (currentMappedValue < 0)
-			currentMappedValue = 0;
+	if (currentMappedValue < 0)
+		currentMappedValue = 0;
 
-		if (currentMappedValue > 254)
-			currentMappedValue = 254;
-	}
-	else
-	{
-		Logger.error("Brake sensor not ready");
-	}
+	if (currentMappedValue > 254)
+		currentMappedValue = 254;
 
 	return currentMappedValue;
 }
