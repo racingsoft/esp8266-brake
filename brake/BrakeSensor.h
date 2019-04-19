@@ -34,9 +34,7 @@ private:
 	long minValue;
 	long maxValue;
 	long currentValue;
-	long previousValue;
 	uint16_t currentMappedValue;
-	uint16_t previousMappedValue;
 	bool calibrationDone;
 };
 
