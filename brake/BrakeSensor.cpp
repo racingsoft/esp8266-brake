@@ -42,13 +42,6 @@ bool BrakeSensorClass::isCalibrated()
 
 uint16_t BrakeSensorClass::read()
 {
-	// Check sensor
-	if (!presionSensor.wait_ready_timeout(1000))
-	{
-		Logger.error("Brake sensor not found");
-		return 0;
-	}
-
 	// Check calibration
 	if (!calibrationDone)
 	{
@@ -57,7 +50,7 @@ uint16_t BrakeSensorClass::read()
 	}
 
 	// Reading uint16_t value
-	currentValue = presionSensor.read();
+	currentValue = presionSensor.read_average(3);
 		
 	// Mapping value to 0 254 range
 	currentMappedValue = (uint16_t)map(currentValue, minValue, maxValue, 0, 254);
