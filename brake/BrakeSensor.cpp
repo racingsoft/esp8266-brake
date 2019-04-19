@@ -61,7 +61,7 @@ uint16_t BrakeSensorClass::read()
 	}
 
 	// Reading uint16_t value
-	currentValue = presionSensor.read_average(10);
+	currentValue = presionSensor.read();
 	if (currentValue != previousValue)
 	{
 		previousValue = currentValue;
@@ -79,7 +79,6 @@ uint16_t BrakeSensorClass::read()
 	if (currentMappedValue != previousMappedValue)
 	{
 		previousMappedValue = currentMappedValue;
-		Logger.info("Mapped value: " + String(currentMappedValue));
 	}
 
 	return currentValue;
