@@ -9,6 +9,7 @@ HX711 presionSensor;
 void BrakeSensorClass::init()
 {
 	presionSensor.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+	previousValue = -1;
 	calibrationDone = false;	
 }
 
@@ -64,7 +65,6 @@ uint16_t BrakeSensorClass::read()
 	if (currentValue != previousValue)
 	{
 		previousValue = currentValue;
-		Logger.info("Current value: " + String(currentValue));
 	}
 	
 	// Mapping value to 0 254 range
