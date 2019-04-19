@@ -55,6 +55,10 @@ uint16_t BrakeSensorClass::read()
 		if (currentMappedValue > 254)
 			currentMappedValue = 254;
 	}
+	else
+	{
+		Logger.error("Brake sensor not ready");
+	}
 
 	return currentMappedValue;
 }
