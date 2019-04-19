@@ -22,23 +22,15 @@ void BrakeSensorClass::doCalibration()
 	}
 
 	// Calibration
-	// presionSensor.set_scale();
-	// presionSensor.tare();
-	
-	/*long offset = presionSensor.get_offset();
-	Logger.info("Calibration value (offset): " + String(offset));
-	long scale = presionSensor.get_scale();
-	Logger.info("Calibration value (scale): " + String(scale));
-	double units = presionSensor.get_units(10);
-	Logger.info("Calibration value (units): " + String(units));*/
 
 	long value = presionSensor.read_average(10);
+	Logger.info("Value: " + String(value));
 
 	minValue = LOADCELL_MINVALUE;
 	maxValue = LOADCELL_MAXVALUE;
 	Logger.info("Min value: " + String(minValue));
 	Logger.info("Max value: " + String(maxValue));
-	Logger.info("Value: " + String(value));
+	
 
 	calibrationDone = true;
 }
