@@ -116,12 +116,14 @@
     <ClInclude Include="BrakeSensor.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="Graphic.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="__vm\.brake.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BrakeOutput.cpp" />
     <ClCompile Include="BrakeSensor.cpp" />
     <ClCompile Include="Display.cpp" />
+    <ClCompile Include="Logger.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -26,7 +26,6 @@ class BrakeSensorClass
 	uint16_t read();
 
 private:
-	HX711 presionSensor;
 	long minValue;
 	long maxValue;
 	bool calibrationDone;

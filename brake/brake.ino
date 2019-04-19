@@ -4,6 +4,7 @@
  Author:	Ruben Castro
 */
 
+#include "Logger.h"
 #include "BrakeOutput.h"
 #include "BrakeSensor.h"
 #include "Graphic.h"
@@ -16,14 +17,19 @@ void setup() {
 	
 	brakeState = INITIALIZING;
 
-	Serial.begin(115200);
-	
+	Logger.init();
+
+	Logger.info("INITIALIZING DISPLAY");
 	Display.init();
 	Display.showWellcome();
 	
+	Logger.info("INITIALIZING BRAKESENSOR");
 	BrakeSensor.init();
+
+	Logger.info("INITIALIZING BRAKEOUTPUT");
 	BrakeOutput.init();
 
+	Logger.info("WORKING");
 	brakeState = WORKING;
 }
 
@@ -32,13 +38,12 @@ void loop() {
 	switch (brakeState)
 	{
 	case CALIBRATING:
-		Serial.printf("Calibrando... %d\n", millis());
 		BrakeSensor.doCalibration();
 		break;
 	
 	case WORKING:
 		uint16_t brakeValue = BrakeSensor.read();
-		Serial.printf("Sensor: %d\n", brakeValue);
+		Logger.info("Brake Sensor: " + String(brakeValue));
 		BrakeOutput.setOutput(brakeValue);
 		break;
 	}

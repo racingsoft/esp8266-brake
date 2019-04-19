@@ -4,6 +4,8 @@
 
 #include "BrakeSensor.h"
 
+HX711 presionSensor;
+
 void BrakeSensorClass::init()
 {
 	presionSensor.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
