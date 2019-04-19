@@ -21,7 +21,7 @@ class BrakeOutputClass
 
  public:
 	void init();
-	void setOutput(int value);
+	void setOutput(uint16_t value);
 	void shutdownOutput();
 
 private:

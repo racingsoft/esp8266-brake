@@ -23,15 +23,12 @@ class BrakeSensorClass
 	void init();
 	void doCalibration();
 	bool isCalibrated();
-	long read();
+	uint16_t read();
 
 private:
 	HX711 presionSensor;
 	long minValue;
 	long maxValue;
-	long previousValue;
-	long currentValue;
-	unsigned long calibrationTime;
 	bool calibrationDone;
 };
 

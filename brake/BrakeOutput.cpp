@@ -12,18 +12,9 @@ void BrakeOutputClass::init()
 	shutdownOutput();
 }
 
-void BrakeOutputClass::setOutput(int value)
-{
-	int valueOk = 0;
-	
-	if (value < 0)
-		valueOk = 0;
-	
-	if (value > 100)
-		valueOk = 100;
-
-	uint16_t mapValue = map(valueOk, 0, 100, 0, 254);
-	outputDac.analogWrite(mapValue);
+void BrakeOutputClass::setOutput(uint16_t value)
+{	
+	outputDac.analogWrite(value);
 }
 
 void BrakeOutputClass::shutdownOutput()

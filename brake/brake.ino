@@ -37,8 +37,7 @@ void loop() {
 		break;
 	
 	case WORKING:
-		Serial.printf("Lectura de sensor...\n");
-		int brakeValue = BrakeSensor.read();
+		uint16_t brakeValue = BrakeSensor.read();
 		Serial.printf("Sensor: %d\n", brakeValue);
 		BrakeOutput.setOutput(brakeValue);
 		break;
