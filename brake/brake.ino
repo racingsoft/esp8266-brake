@@ -44,6 +44,7 @@ void loop() {
 	case WORKING:
 		uint16_t brakeValue = BrakeSensor.read();
 		BrakeOutput.setOutput(brakeValue);
+		Logger.info("BrakeOutput: " + String(brakeValue));
 		break;
 	}
 
@@ -52,4 +53,6 @@ void loop() {
 		Logger.info("WORKING");
 		brakeState = WORKING;
 	}
+
+	delay(10);
 }
