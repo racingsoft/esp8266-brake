@@ -10,6 +10,7 @@
 #endif
 
 #include <HX711.h>
+#include "Logger.h"
 
 // HX711 circuit wiring
 const int LOADCELL_DOUT_PIN = D3;
