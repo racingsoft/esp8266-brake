@@ -34,10 +34,11 @@ void BrakeSensorClass::doCalibration()
 
 	long value = presionSensor.read_average(10);
 
-	minValue = value + ((LOADCELL_MAXVALUE - value)/10);
+	minValue = LOADCELL_MINVALUE;
 	maxValue = LOADCELL_MAXVALUE;
 	Logger.info("Min value: " + String(minValue));
 	Logger.info("Max value: " + String(maxValue));
+	Logger.info("Value: " + String(value));
 
 	calibrationDone = true;
 }
