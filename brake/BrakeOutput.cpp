@@ -13,8 +13,16 @@ void BrakeOutputClass::Init()
 }
 
 void BrakeOutputClass::SetOutput(uint16_t value)
-{	
-	outputDac.analogWrite(value);
+{
+	uint16_t output = value;
+
+	if (output < 0)
+		output = 0;
+
+	if (output > 254)
+		output = 254;
+
+	outputDac.analogWrite(output);
 	delayMicroseconds(1);	
 }
 

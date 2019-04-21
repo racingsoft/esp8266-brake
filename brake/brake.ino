@@ -96,7 +96,7 @@ void loop() {
 	case WORKING:
 
 		long brakeSensorValue = BrakeSensor.Read();
-		long brakeOutputValue = map(brakeSensorValue, BrakeSensor.MinValue(), BrakeSensor.MaxValue(),0,255);
+		long brakeOutputValue = map(brakeSensorValue, BrakeSensor.MinValue(), BrakeSensor.MaxValue(),0,254);
 		BrakeOutput.SetOutput((uint16_t)brakeOutputValue);
 		Logger.info("Brake Sensor Value: " + String(brakeSensorValue));
 		Logger.info("Brake Output Value: " + String((uint16_t)brakeOutputValue));
