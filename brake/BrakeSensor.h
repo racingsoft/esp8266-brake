@@ -11,10 +11,13 @@
 
 #include <HX711.h>
 #include "Logger.h"
+#include "Average.h"
 
 // HX711 circuit wiring
 const int LOADCELL_DOUT_PIN = D3;
 const int LOADCELL_SCK_PIN = D4;
+
+const int MAX_READS = 50;
 
 const long MIN_CALIBRATION_TIME = 10000;
 const long MIN_CALIBRATION_DEFAULT_VALUE = 0;

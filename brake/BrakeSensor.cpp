@@ -5,6 +5,7 @@
 #include "BrakeSensor.h"
 
 HX711 presionSensor;
+Average<long> average(MAX_READS);
 
 void BrakeSensorClass::Init()
 {
@@ -31,10 +32,10 @@ void BrakeSensorClass::DoMinCalibration()
 		_minCalibrationStartTime = millis();
 
 	// Min Calibration
-	if (_sensorState == READY)
+	if (_sensorState == READY && average.getCount() < MAX_READS)
 	{
 		_currentValue = presionSensor.read_average(10);
-		_minValue = (_minValue == MIN_CALIBRATION_DEFAULT_VALUE) ? _currentValue : (_minValue + _currentValue) / 2;
+		average.push(_currentValue);
 	}
 
 	// End Min Calibration
@@ -42,6 +43,8 @@ void BrakeSensorClass::DoMinCalibration()
 	unsigned long elapsedTime = abs(currentTime - _minCalibrationStartTime);
 	if (elapsedTime > MIN_CALIBRATION_TIME)
 	{
+		_minValue = average.mode();
+		average.clear();
 		_minCalibrationStartTime = 0;
 		_minCalibrationDone = true;
 	}
@@ -64,10 +67,10 @@ void BrakeSensorClass::DoMaxCalibration()
 		_maxCalibrationStartTime = millis();
 
 	// Max Calibration
-	if (_sensorState == READY)
+	if (_sensorState == READY && average.getCount() < MAX_READS)
 	{
 		_currentValue = presionSensor.read_average(10);
-		_maxValue = (_maxValue == MAX_CALIBRATION_DEFAULT_VALUE) ? _currentValue : (_maxValue + _currentValue) / 2;
+		average.push(_currentValue);
 	}
 
 	// End Max Calibration
@@ -75,6 +78,8 @@ void BrakeSensorClass::DoMaxCalibration()
 	unsigned long elapsedTime = abs(currentTime - _maxCalibrationStartTime);
 	if (elapsedTime > MAX_CALIBRATION_TIME)
 	{
+		_maxValue = average.mode();
+		average.clear();
 		_maxCalibrationStartTime = 0;
 		_maxCalibrationDone = true;
 	}

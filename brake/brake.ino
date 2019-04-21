@@ -4,6 +4,7 @@
  Author:	Ruben Castro
 */
 
+#include "Average.h"
 #include "Logger.h"
 #include "BrakeOutput.h"
 #include "BrakeSensor.h"
