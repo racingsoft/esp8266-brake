@@ -80,6 +80,7 @@ void loop() {
 	case CALIBRATION_ERROR:
 		
 		delay(3000);
+		BrakeSensor.ResetCalibration();
 		Logger.info("MIN CALIBRATION");
 		brakeState = MIN_CALIBRATION;
 		Display.ForceRefresh();

@@ -35,6 +35,7 @@ class BrakeSensorClass
 	void DoMaxCalibration();
 	bool IsMaxCalibrated();
 	bool IsMaxCalibratedOk();
+	void ResetCalibration();
 	long Read();
 	long MinValue();
 	long MaxValue();

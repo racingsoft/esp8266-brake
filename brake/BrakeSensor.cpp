@@ -15,12 +15,7 @@ void BrakeSensorClass::Init()
 	{
 		_sensorState = READY;
 		_currentValue = presionSensor.read();
-		_minValue = MIN_CALIBRATION_DEFAULT_VALUE;
-		_minCalibrationDone = false;
-		_minCalibrationStartTime = 0;
-		_maxValue = MAX_CALIBRATION_DEFAULT_VALUE;
-		_maxCalibrationDone = false;
-		_maxCalibrationStartTime = 0;
+		ResetCalibration();
 	}
 	else
 	{
@@ -93,6 +88,16 @@ bool BrakeSensorClass::IsMaxCalibrated()
 bool BrakeSensorClass::IsMaxCalibratedOk()
 {
 	return (_sensorState == READY && _maxCalibrationDone && _maxValue != MAX_CALIBRATION_DEFAULT_VALUE);
+}
+
+void BrakeSensorClass::ResetCalibration()
+{
+	_minValue = MIN_CALIBRATION_DEFAULT_VALUE;
+	_minCalibrationDone = false;
+	_minCalibrationStartTime = 0;
+	_maxValue = MAX_CALIBRATION_DEFAULT_VALUE;
+	_maxCalibrationDone = false;
+	_maxCalibrationStartTime = 0;
 }
 
 long BrakeSensorClass::Read()
