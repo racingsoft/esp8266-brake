@@ -16,14 +16,19 @@
 #include <OLEDDisplay.h>
 #include "Graphic.h"
 
+const unsigned long REFRESH_TIME = 50;
+
 class DisplayClass
 {
  protected:
-
+	 bool _forceUpdate;
+	 unsigned long _lastUpdate;
 
  public:
-	void init();
-	void showWellcome();
+	void Init();
+	void ShowWellcome();
+	void ForceRefresh();
+	void Refresh();
 };
 
 extern DisplayClass Display;

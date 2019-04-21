@@ -6,55 +6,125 @@
 
 HX711 presionSensor;
 
-void BrakeSensorClass::init()
+void BrakeSensorClass::Init()
 {
+	_sensorState = NOT_INITIALIZED;
 	presionSensor.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-	currentValue = LOADCELL_MINVALUE;
-	calibrationDone = false;	
-}
 
-void BrakeSensorClass::doCalibration()
-{
-	// Calibration
 	if (presionSensor.wait_ready_timeout(1000))
 	{
-		currentValue = presionSensor.read_average(10);
-		Logger.info("Value: " + String(currentValue));
-
-		minValue = LOADCELL_MINVALUE;
-		maxValue = LOADCELL_MAXVALUE;
-		Logger.info("Min value: " + String(minValue));
-		Logger.info("Max value: " + String(maxValue));
-
-		calibrationDone = true;
+		_sensorState = READY;
+		_currentValue = presionSensor.read();
+		_minValue = MIN_CALIBRATION_DEFAULT_VALUE;
+		_minCalibrationDone = false;
+		_minCalibrationStartTime = 0;
+		_maxValue = MAX_CALIBRATION_DEFAULT_VALUE;
+		_maxCalibrationDone = false;
+		_maxCalibrationStartTime = 0;
 	}
 	else
 	{
+		_sensorState = NOT_FOUND;
 		Logger.error("Brake sensor not found");
 	}
 }
 
-bool BrakeSensorClass::isCalibrated()
+void BrakeSensorClass::DoMinCalibration()
 {
-	return calibrationDone;
+	// Time
+	if (_minCalibrationStartTime == 0)
+		_minCalibrationStartTime = millis();
+
+	// Min Calibration
+	if (_sensorState == READY)
+	{
+		_currentValue = presionSensor.read_average(10);
+		_minValue = (_minValue == MIN_CALIBRATION_DEFAULT_VALUE) ? _currentValue : (_minValue + _currentValue) / 2;
+	}
+
+	// End Min Calibration
+	unsigned long currentTime = millis();
+	unsigned long elapsedTime = abs(currentTime - _minCalibrationStartTime);
+	if (elapsedTime > MIN_CALIBRATION_TIME)
+	{
+		_minCalibrationStartTime = 0;
+		_minCalibrationDone = true;
+	}
 }
 
-uint16_t BrakeSensorClass::read()
+bool BrakeSensorClass::IsMinCalibrated()
+{
+	return _minCalibrationDone;
+}
+
+bool BrakeSensorClass::IsMinCalibratedOk()
+{
+	return (_sensorState == READY && _minCalibrationDone && _minValue != MIN_CALIBRATION_DEFAULT_VALUE);
+}
+
+void BrakeSensorClass::DoMaxCalibration()
+{
+	// Time
+	if (_maxCalibrationStartTime == 0)
+		_maxCalibrationStartTime = millis();
+
+	// Max Calibration
+	if (_sensorState == READY)
+	{
+		_currentValue = presionSensor.read_average(10);
+		_maxValue = (_maxValue == MAX_CALIBRATION_DEFAULT_VALUE) ? _currentValue : (_maxValue + _currentValue) / 2;
+	}
+
+	// End Max Calibration
+	unsigned long currentTime = millis();
+	unsigned long elapsedTime = abs(currentTime - _maxCalibrationStartTime);
+	if (elapsedTime > MAX_CALIBRATION_TIME)
+	{
+		_maxCalibrationStartTime = 0;
+		_maxCalibrationDone = true;
+	}
+}
+
+bool BrakeSensorClass::IsMaxCalibrated()
+{
+	return _maxCalibrationDone;
+}
+
+bool BrakeSensorClass::IsMaxCalibratedOk()
+{
+	return (_sensorState == READY && _maxCalibrationDone && _maxValue != MAX_CALIBRATION_DEFAULT_VALUE);
+}
+
+long BrakeSensorClass::Read()
 {
 	// Reading uint16_t value
-	currentValue = presionSensor.read();
+	_currentValue = presionSensor.read();
+	return _MapValue(_currentValue);
+}
 
-	// Mapping value to 0 254 range
-	currentMappedValue = (uint16_t)map(currentValue, minValue, maxValue, 0, 254);
+long BrakeSensorClass::MinValue()
+{
+	return 0;
+}
 
-	if (currentMappedValue < 0)
-		currentMappedValue = 0;
+long BrakeSensorClass::MaxValue()
+{
+	return (_maxValue - _minValue);
+}
 
-	if (currentMappedValue > 254)
-		currentMappedValue = 254;
+long BrakeSensorClass::_MapValue(long value)
+{
+	long mappedValue = value - _minValue;
+	long min = 0;
+	long max = _maxValue - _minValue;
 
-	return currentMappedValue;
+	if (mappedValue < min)
+		return min;
+
+	if (mappedValue > max)
+		return max;
+
+	return mappedValue;
 }
 
 BrakeSensorClass BrakeSensor;
-

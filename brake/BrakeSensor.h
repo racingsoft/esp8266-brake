@@ -16,26 +16,39 @@
 const int LOADCELL_DOUT_PIN = D3;
 const int LOADCELL_SCK_PIN = D4;
 
-// HX711 manual calibration
-const long LOADCELL_MINVALUE = 180000;
-const long LOADCELL_MAXVALUE = 3100000;
+const long MIN_CALIBRATION_TIME = 5000;
+const long MIN_CALIBRATION_DEFAULT_VALUE = 0;
+const long MAX_CALIBRATION_TIME = 5000;
+const long MAX_CALIBRATION_DEFAULT_VALUE = 0;
+
+typedef enum { NOT_INITIALIZED, NOT_FOUND, READY } SensorStates;
 
 class BrakeSensorClass
 {
  protected:
 
  public:
-	void init();
-	void doCalibration();
-	bool isCalibrated();
-	uint16_t read();
+	void Init();
+	void DoMinCalibration();
+	bool IsMinCalibrated();
+	bool IsMinCalibratedOk();
+	void DoMaxCalibration();
+	bool IsMaxCalibrated();
+	bool IsMaxCalibratedOk();
+	long Read();
+	long MinValue();
+	long MaxValue();
 
 private:
-	long minValue;
-	long maxValue;
-	long currentValue;
-	uint16_t currentMappedValue;
-	bool calibrationDone;
+	SensorStates _sensorState;
+	long _minValue;
+	long _maxValue;
+	long _currentValue;
+	unsigned long _minCalibrationStartTime;
+	bool _minCalibrationDone;
+	unsigned long _maxCalibrationStartTime;
+	bool _maxCalibrationDone;
+	long _MapValue(long value);
 };
 
 extern BrakeSensorClass BrakeSensor;

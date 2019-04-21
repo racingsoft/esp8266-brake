@@ -10,7 +10,8 @@
 #include "Graphic.h"
 #include "Display.h"
 
-typedef enum { CALIBRATING, WORKING } states;
+typedef enum { MIN_CALIBRATION, MAX_CALIBRATION, CALIBRATION_ERROR, CALIBRATION_OK, WORKING } states;
+
 states brakeState;
 
 void setup() {
@@ -18,35 +19,91 @@ void setup() {
 	Logger.init();
 
 	Logger.info("INITIALIZING DISPLAY");
-	Display.init();
-	Display.showWellcome();
+	Display.Init();
+	Display.ShowWellcome();
 	
 	Logger.info("INITIALIZING BRAKESENSOR");
-	BrakeSensor.init();
+	BrakeSensor.Init();
 
 	Logger.info("INITIALIZING BRAKEOUTPUT");
-	BrakeOutput.init();
+	BrakeOutput.Init();
 
-	brakeState = CALIBRATING;
+	Logger.info("MIN CALIBRATION");
+	brakeState = MIN_CALIBRATION;
+	Display.ForceRefresh();
 }
 
 void loop() {
 	
 	switch (brakeState)
 	{
-	case CALIBRATING:
-		Logger.info("CALIBRATING");
-		BrakeSensor.doCalibration();
-		if (BrakeSensor.isCalibrated())
+	case MIN_CALIBRATION:
+		
+		BrakeSensor.DoMinCalibration();
+		if (BrakeSensor.IsMinCalibrated())
 		{
-			Logger.info("WORKING");
-			brakeState = WORKING;
+			if (BrakeSensor.IsMinCalibratedOk())
+			{
+				Logger.info("MAX CALIBRATION");
+				brakeState = MAX_CALIBRATION;
+				Display.ForceRefresh();
+			}
+			else
+			{
+				Logger.info("CALIBRATION ERROR");
+				brakeState = CALIBRATION_ERROR;
+				Display.ForceRefresh();
+			}
 		}
+		break;
+
+	case MAX_CALIBRATION:
+
+		BrakeSensor.DoMaxCalibration();
+		if (BrakeSensor.IsMaxCalibrated())
+		{
+			if (BrakeSensor.IsMaxCalibratedOk())
+			{
+				Logger.info("CALIBRATION OK");
+				brakeState = CALIBRATION_OK;
+				Display.ForceRefresh();
+			}
+			else
+			{
+				Logger.info("CALIBRATION ERROR");
+				brakeState = CALIBRATION_ERROR;
+				Display.ForceRefresh();
+			}
+		}
+		break;
+
+	case CALIBRATION_ERROR:
+		
+		delay(3000);
+		Logger.info("MIN CALIBRATION");
+		brakeState = MIN_CALIBRATION;
+		Display.ForceRefresh();
+		break;
+
+	case CALIBRATION_OK:
+
+		delay(3000);
+		Logger.info("WORKING");
+		brakeState = WORKING;
+		Display.ForceRefresh();
 		break;
 	
 	case WORKING:
-		uint16_t brakeValue = BrakeSensor.read();
-		BrakeOutput.setOutput(brakeValue);
+
+		long brakeSensorValue = BrakeSensor.Read();
+		long brakeOutputValue = map(brakeSensorValue, BrakeSensor.MinValue(), BrakeSensor.MaxValue(),0,255);
+		BrakeOutput.SetOutput((uint16_t)brakeOutputValue);
+		Logger.info("Brake Sensor Value: " + String(brakeSensorValue));
+		Logger.info("Brake Output Value: " + String((uint16_t)brakeOutputValue));
 		break;
 	}
+
+	// Display update
+	Display.Refresh();
+
 }

@@ -6,21 +6,21 @@
 
 MCP41xxx outputDac(SS_MCP41010_PIN);
 
-void BrakeOutputClass::init()
+void BrakeOutputClass::Init()
 {
 	outputDac.begin();
-	setOutput(0);
+	SetOutput(0);
 }
 
-void BrakeOutputClass::setOutput(uint16_t value)
+void BrakeOutputClass::SetOutput(uint16_t value)
 {	
 	outputDac.analogWrite(value);
-        delayMicroseconds(1);	
+	delayMicroseconds(1);	
 }
 
-void BrakeOutputClass::shutdownOutput()
+void BrakeOutputClass::ShutdownOutput()
 {
-	setOutput(DAC_SHUTDOWN);
+	SetOutput(DAC_SHUTDOWN);
 }
 
 BrakeOutputClass BrakeOutput;

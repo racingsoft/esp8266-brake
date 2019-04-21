@@ -20,9 +20,9 @@ class BrakeOutputClass
 
 
  public:
-	void init();
-	void setOutput(uint16_t value);
-	void shutdownOutput();
+	void Init();
+	void SetOutput(uint16_t value);
+	void ShutdownOutput();
 
 private:
 
