@@ -18,10 +18,9 @@ const int LOADCELL_DOUT_PIN = D3;
 const int LOADCELL_SCK_PIN = D4;
 
 const int MAX_READS = 50;
+const float DELTA_PERCENT = 0.20;
 
-const long MIN_CALIBRATION_TIME = 10000;
 const long MIN_CALIBRATION_DEFAULT_VALUE = 0;
-const long MAX_CALIBRATION_TIME = 5000;
 const long MAX_CALIBRATION_DEFAULT_VALUE = 0;
 
 typedef enum { NOT_INITIALIZED, NOT_FOUND, READY } SensorStates;
@@ -48,10 +47,9 @@ private:
 	long _minValue;
 	long _maxValue;
 	long _currentValue;
-	unsigned long _minCalibrationStartTime;
 	bool _minCalibrationDone;
-	unsigned long _maxCalibrationStartTime;
 	bool _maxCalibrationDone;
+	int _maxReads;
 	long _MapValue(long value);
 };
 

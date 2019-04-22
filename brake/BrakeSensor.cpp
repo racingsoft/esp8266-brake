@@ -27,26 +27,34 @@ void BrakeSensorClass::Init()
 
 void BrakeSensorClass::DoMinCalibration()
 {
-	// Time
-	if (_minCalibrationStartTime == 0)
-		_minCalibrationStartTime = millis();
-
 	// Min Calibration
-	if (_sensorState == READY && average.getCount() < MAX_READS)
+	if (_sensorState == READY )
 	{
-		_currentValue = presionSensor.read_average(10);
-		average.push(_currentValue);
-	}
+		if (average.getCount() < MAX_READS)
+		{
+			// Read sensor average
+			_currentValue = presionSensor.read_average(10);
 
-	// End Min Calibration
-	unsigned long currentTime = millis();
-	unsigned long elapsedTime = abs(currentTime - _minCalibrationStartTime);
-	if (elapsedTime > MIN_CALIBRATION_TIME)
+			// Mean & Delta
+			long mean = (long)average.mean();
+			long delta = (long)((float)mean * DELTA_PERCENT);
+
+			if (mean == 0 || (mean !=0 && abs(_currentValue - mean) < delta ))
+			{
+				average.push(_currentValue);
+			}
+		}
+		else
+		{
+			// End Min Calibration
+			_minValue = (long)average.mean();
+			average.clear();
+			_minCalibrationDone = true;
+		}
+	}
+	else
 	{
-		_minValue = average.mode();
-		average.clear();
-		_minCalibrationStartTime = 0;
-		_minCalibrationDone = true;
+		Logger.error("Sensor not ready");
 	}
 }
 
@@ -62,26 +70,52 @@ bool BrakeSensorClass::IsMinCalibratedOk()
 
 void BrakeSensorClass::DoMaxCalibration()
 {
-	// Time
-	if (_maxCalibrationStartTime == 0)
-		_maxCalibrationStartTime = millis();
-
 	// Max Calibration
-	if (_sensorState == READY && average.getCount() < MAX_READS)
+	if (_sensorState == READY)  
 	{
-		_currentValue = presionSensor.read_average(10);
-		average.push(_currentValue);
+		if (_maxReads < MAX_READS)
+		{
+			// Read sensor average
+			_currentValue = presionSensor.read_average(10);
+			long delta = (long)((float)_minValue * DELTA_PERCENT);
+			int count = average.getCount();
+			
+			if (count == 0)
+			{
+				if (abs(_currentValue - _minValue) > delta)
+				{
+					average.push(_currentValue);
+				}
+			}
+			else
+			{
+				long previous = average.get(count - 1);
+				if (_currentValue > previous)
+				{
+					// Store value
+					average.push(_currentValue);
+				}
+				else
+				{
+					if (abs(_currentValue - _minValue) < delta)
+					{
+						_maxReads++;
+					}
+				}
+			}
+		}
+		else
+		{
+			// End Max Calibration
+			_maxValue = average.maximum();
+			average.clear();
+			_maxReads = 0;
+			_maxCalibrationDone = true;
+		}
 	}
-
-	// End Max Calibration
-	unsigned long currentTime = millis();
-	unsigned long elapsedTime = abs(currentTime - _maxCalibrationStartTime);
-	if (elapsedTime > MAX_CALIBRATION_TIME)
+	else
 	{
-		_maxValue = average.mode();
-		average.clear();
-		_maxCalibrationStartTime = 0;
-		_maxCalibrationDone = true;
+		Logger.error("Sensor not found");
 	}
 }
 
@@ -99,10 +133,9 @@ void BrakeSensorClass::ResetCalibration()
 {
 	_minValue = MIN_CALIBRATION_DEFAULT_VALUE;
 	_minCalibrationDone = false;
-	_minCalibrationStartTime = 0;
 	_maxValue = MAX_CALIBRATION_DEFAULT_VALUE;
 	_maxCalibrationDone = false;
-	_maxCalibrationStartTime = 0;
+	_maxReads = 0;
 }
 
 long BrakeSensorClass::Read()
