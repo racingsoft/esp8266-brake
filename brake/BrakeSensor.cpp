@@ -115,7 +115,7 @@ void BrakeSensorClass::DoMaxCalibration()
 	}
 	else
 	{
-		Logger.error("Sensor not found");
+		Logger.error("Sensor not ready");
 	}
 }
 
