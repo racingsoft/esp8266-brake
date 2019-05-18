@@ -1,5 +1,5 @@
 # esp8266-brake
-Conversor de señal para sustituir potenciometro mecánico por sensor de presión en pedal de freno de simulador. El programa está diseñado para el uso del microcontrolador Wemos D1 R2 & Mini. Para detectar la presión del pedal se utiliza un sensor de carga HX711 con una célula de carga de 20 kilos. Para simular la salida analógica se utiliza un digipot AD5231 que nos da una resolución de 1024 bits. Además se ha añadido una pantalla oled 128x64 para visualizar el sistema de calibración.
+Conversor de señal para sustituir potenciometro mecánico por sensor de presión en pedal de freno de simulador. El programa está diseñado para el uso del microcontrolador Wemos D1 R2 & Mini. Para detectar la presión del pedal se utiliza un sensor de carga HX711 con una célula de carga de 20 kilos. Para simular la salida analógica se utiliza un digipot AD5231 que nos da una resolución de 1024 bits. Además se ha añadido una pantalla oled SH1106 128x64 para visualizar el sistema de calibración.
 
 Esquema de conexionado:
 
