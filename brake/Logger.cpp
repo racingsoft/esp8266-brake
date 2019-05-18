@@ -26,12 +26,17 @@
 
 #include "Logger.h"
 
-void LoggerClass::init()
+Logger::Logger(unsigned long baud = 115200)
 {
-	Serial.begin(115200);
+	_baud = baud;
 }
 
-void LoggerClass::info(String info)
+void Logger::init()
+{
+	Serial.begin(_baud);
+}
+
+void Logger::info(String info)
 {
 	if (Serial.isTxEnabled())
 	{
@@ -39,7 +44,7 @@ void LoggerClass::info(String info)
 	}
 }
 
-void LoggerClass::warn(String warn)
+void Logger::warn(String warn)
 {
 	if (Serial.isTxEnabled())
 	{
@@ -47,12 +52,10 @@ void LoggerClass::warn(String warn)
 	}
 }
 
-void LoggerClass::error(String error)
+void Logger::error(String error)
 {
 	if (Serial.isTxEnabled())
 	{
 		Serial.println("[ERROR]: " + error);
 	}
 }
-
-LoggerClass Logger;

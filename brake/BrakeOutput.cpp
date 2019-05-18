@@ -26,32 +26,42 @@
 
 #include "BrakeOutput.h"
 
-MCP41xxx outputDac(SS_MCP41010_PIN);
-
-void BrakeOutputClass::Init()
+BrakeOutput::BrakeOutput(uint8_t cs)
 {
-	outputDac.begin();
+	outputDac = new AD5231(cs);
+}
+
+void BrakeOutput::Init()
+{
+	outputDac->begin();
 	SetOutput(0);
 }
 
-void BrakeOutputClass::SetOutput(uint16_t value)
+void BrakeOutput::SetOutput(uint16_t value)
 {
 	uint16_t output = value;
 
-	if (output < 0)
-		output = 0;
+	if (output < _MIN_VALUE)
+		output = _MIN_VALUE;
 
-	if (output > 254)
-		output = 254;
+	if (output > _MAX_VALUE)
+		output = _MAX_VALUE;
 
-	outputDac.analogWrite(output);
+	outputDac->digitalPotWrite(output);
 	delayMicroseconds(1);	
 }
 
-void BrakeOutputClass::ShutdownOutput()
+void BrakeOutput::ShutdownOutput()
 {
-	SetOutput(DAC_SHUTDOWN);
+	SetOutput(0);
 }
 
-BrakeOutputClass BrakeOutput;
+long BrakeOutput::MinValue()
+{
+	return (long)_MIN_VALUE;
+}
 
+long BrakeOutput::MaxValue()
+{
+	return (long)_MAX_VALUE;
+}

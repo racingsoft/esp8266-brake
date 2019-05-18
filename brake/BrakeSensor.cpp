@@ -26,96 +26,102 @@
 
 #include "BrakeSensor.h"
 
-HX711 presionSensor;
-Average<long> average(MAX_READS);
+BrakeSensor::BrakeSensor(uint8_t cs, uint8_t sck, Logger* logger)
+{
+	_cs = cs;
+	_sck = sck;
+	_logger = logger;
+	_presionSensor = new HX711();
+	_average = new Average<long>(_MAX_READS);
+}
 
-void BrakeSensorClass::Init()
+void BrakeSensor::Init()
 {
 	_sensorState = NOT_INITIALIZED;
-	presionSensor.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+	_presionSensor->begin(_cs, _sck);
 
-	if (presionSensor.wait_ready_timeout(1000))
+	if (_presionSensor->wait_ready_timeout(1000))
 	{
 		_sensorState = READY;
-		_currentValue = presionSensor.read();
+		_currentValue = _presionSensor->read();
 		ResetCalibration();
 	}
 	else
 	{
 		_sensorState = NOT_FOUND;
-		Logger.error("Brake sensor not found");
+		_logger->error("Brake sensor not found");
 	}
 }
 
-void BrakeSensorClass::DoMinCalibration()
+void BrakeSensor::DoMinCalibration()
 {
 	// Min Calibration
 	if (_sensorState == READY )
 	{
-		if (average.getCount() < MAX_READS)
+		if (_average->getCount() < _MAX_READS)
 		{
 			// Read sensor average
-			_currentValue = presionSensor.read_average(10);
+			_currentValue = _presionSensor->read_average(10);
 
 			// Mean & Delta
-			long mean = (long)average.mean();
-			long delta = (long)((float)mean * DELTA_PERCENT);
+			long mean = (long)_average->mean();
+			long delta = (long)((float)mean * _DELTA_PERCENT);
 
 			if (mean == 0 || (mean !=0 && abs(_currentValue - mean) < delta ))
 			{
-				average.push(_currentValue);
+				_average->push(_currentValue);
 			}
 		}
 		else
 		{
 			// End Min Calibration
-			_minValue = (long)average.mean();
-			average.clear();
+			_minValue = (long)_average->mean();
+			_average->clear();
 			_minCalibrationDone = true;
 		}
 	}
 	else
 	{
-		Logger.error("Sensor not ready");
+		_logger->error("Sensor not ready");
 	}
 }
 
-bool BrakeSensorClass::IsMinCalibrated()
+bool BrakeSensor::IsMinCalibrated()
 {
 	return _minCalibrationDone;
 }
 
-bool BrakeSensorClass::IsMinCalibratedOk()
+bool BrakeSensor::IsMinCalibratedOk()
 {
-	return (_sensorState == READY && _minCalibrationDone && _minValue != MIN_CALIBRATION_DEFAULT_VALUE);
+	return (_sensorState == READY && _minCalibrationDone && _minValue != _MIN_CALIBRATION_DEFAULT_VALUE);
 }
 
-void BrakeSensorClass::DoMaxCalibration()
+void BrakeSensor::DoMaxCalibration()
 {
 	// Max Calibration
 	if (_sensorState == READY)  
 	{
-		if (_maxReads < MAX_READS)
+		if (_maxReads < _MAX_READS)
 		{
 			// Read sensor average
-			_currentValue = presionSensor.read_average(10);
-			long delta = (long)((float)_minValue * DELTA_PERCENT);
-			int count = average.getCount();
+			_currentValue = _presionSensor->read_average(10);
+			long delta = (long)((float)_minValue * _DELTA_PERCENT);
+			int count = _average->getCount();
 			
 			if (count == 0)
 			{
 				if (abs(_currentValue - _minValue) > delta)
 				{
-					average.push(_currentValue);
+					_average->push(_currentValue);
 				}
 			}
 			else
 			{
-				long previous = average.get(count - 1);
+				long previous = _average->get(count - 1);
 				if (_currentValue > previous)
 				{
 					// Store value
-					average.push(_currentValue);
+					_average->push(_currentValue);
 				}
 				else
 				{
@@ -129,55 +135,55 @@ void BrakeSensorClass::DoMaxCalibration()
 		else
 		{
 			// End Max Calibration
-			_maxValue = average.maximum();
-			average.clear();
+			_maxValue = _average->maximum();
+			_average->clear();
 			_maxReads = 0;
 			_maxCalibrationDone = true;
 		}
 	}
 	else
 	{
-		Logger.error("Sensor not ready");
+		_logger->error("Sensor not ready");
 	}
 }
 
-bool BrakeSensorClass::IsMaxCalibrated()
+bool BrakeSensor::IsMaxCalibrated()
 {
 	return _maxCalibrationDone;
 }
 
-bool BrakeSensorClass::IsMaxCalibratedOk()
+bool BrakeSensor::IsMaxCalibratedOk()
 {
-	return (_sensorState == READY && _maxCalibrationDone && _maxValue != MAX_CALIBRATION_DEFAULT_VALUE);
+	return (_sensorState == READY && _maxCalibrationDone && _maxValue != _MAX_CALIBRATION_DEFAULT_VALUE);
 }
 
-void BrakeSensorClass::ResetCalibration()
+void BrakeSensor::ResetCalibration()
 {
-	_minValue = MIN_CALIBRATION_DEFAULT_VALUE;
+	_minValue = _MIN_CALIBRATION_DEFAULT_VALUE;
 	_minCalibrationDone = false;
-	_maxValue = MAX_CALIBRATION_DEFAULT_VALUE;
+	_maxValue = _MAX_CALIBRATION_DEFAULT_VALUE;
 	_maxCalibrationDone = false;
 	_maxReads = 0;
 }
 
-long BrakeSensorClass::Read()
+long BrakeSensor::Read()
 {
 	// Reading uint16_t value
-	_currentValue = presionSensor.read();
+	_currentValue = _presionSensor->read();
 	return _MapValue(_currentValue);
 }
 
-long BrakeSensorClass::MinValue()
+long BrakeSensor::MinValue()
 {
 	return 0;
 }
 
-long BrakeSensorClass::MaxValue()
+long BrakeSensor::MaxValue()
 {
 	return (_maxValue - _minValue);
 }
 
-long BrakeSensorClass::_MapValue(long value)
+long BrakeSensor::_MapValue(long value)
 {
 	long mappedValue = value - _minValue;
 	long min = 0;
@@ -191,5 +197,3 @@ long BrakeSensorClass::_MapValue(long value)
 
 	return mappedValue;
 }
-
-BrakeSensorClass BrakeSensor;

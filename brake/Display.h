@@ -40,20 +40,22 @@
 
 const unsigned long REFRESH_TIME = 50;
 
-class DisplayClass
+class Display
 {
  protected:
 	 bool _forceUpdate;
 	 unsigned long _lastUpdate;
 
  public:
+	Display(uint8_t address, uint8_t sda, uint8_t scl, OLEDDISPLAY_GEOMETRY geometry);
 	void Init();
 	void ShowWellcome();
 	void ForceRefresh();
 	void Refresh();
-};
 
-extern DisplayClass Display;
+private:
+	SH1106Wire* display;
+};
 
 #endif
 

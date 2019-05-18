@@ -35,23 +35,14 @@
 #include "Logger.h"
 #include "Average.h"
 
-// HX711 circuit wiring
-const int LOADCELL_DOUT_PIN = D3;
-const int LOADCELL_SCK_PIN = D4;
-
-const int MAX_READS = 50;
-const float DELTA_PERCENT = 0.20;
-
-const long MIN_CALIBRATION_DEFAULT_VALUE = 0;
-const long MAX_CALIBRATION_DEFAULT_VALUE = 0;
-
 typedef enum { NOT_INITIALIZED, NOT_FOUND, READY } SensorStates;
 
-class BrakeSensorClass
+class BrakeSensor
 {
  protected:
 
  public:
+	BrakeSensor(uint8_t cs, uint8_t sck, Logger* logger);
 	void Init();
 	void DoMinCalibration();
 	bool IsMinCalibrated();
@@ -65,7 +56,20 @@ class BrakeSensorClass
 	long MaxValue();
 
 private:
+	const int _MAX_READS = 50;
+	const float _DELTA_PERCENT = 0.20;
+	const long _MIN_CALIBRATION_DEFAULT_VALUE = 0;
+	const long _MAX_CALIBRATION_DEFAULT_VALUE = 0;
+
+	uint8_t _cs;
+	uint8_t _sck;
+
+	HX711* _presionSensor;
+	Average<long>* _average;
+	Logger* _logger;
+
 	SensorStates _sensorState;
+
 	long _minValue;
 	long _maxValue;
 	long _currentValue;
@@ -74,8 +78,6 @@ private:
 	int _maxReads;
 	long _MapValue(long value);
 };
-
-extern BrakeSensorClass BrakeSensor;
 
 #endif
 

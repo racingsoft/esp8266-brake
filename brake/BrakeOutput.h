@@ -31,26 +31,25 @@
 	#include "WProgram.h"
 #endif
 
-#include <MCP41xxx.h>
+#include "AD5231.h"
 
-// MCP41xxx wiring
-const uint8_t SS_MCP41010_PIN = D8;
-
-class BrakeOutputClass
+class BrakeOutput
 {
- protected:
+protected:
 
-
- public:
+public:
+	BrakeOutput(uint8_t cs);
 	void Init();
 	void SetOutput(uint16_t value);
 	void ShutdownOutput();
+	long MinValue();
+	long MaxValue();
 
 private:
-
+	const uint16_t _MIN_VALUE = 0;
+	const uint16_t _MAX_VALUE = 1023;
+	AD5231* outputDac;
 };
-
-extern BrakeOutputClass BrakeOutput;
 
 #endif
 

@@ -26,39 +26,39 @@
 
 #include "Display.h"
 
-const uint8_t SDA_PIN = D2;
-const uint8_t SCL_PIN = D1;
+Display::Display(uint8_t address, uint8_t sda, uint8_t scl, OLEDDISPLAY_GEOMETRY geometry = GEOMETRY_128_64)
+{
+	display = new SH1106Wire(address, sda, scl, geometry);
+}
 
-SH1106Wire display(0x3c, SDA_PIN, SCL_PIN, GEOMETRY_128_64);
-
-void DisplayClass::Init()
+void Display::Init()
 {
 	// Initialising the UI will init the display too.
-	display.init();
-	display.flipScreenVertically();
-	display.setFont(ArialMT_Plain_10);
-	display.clear();
+	display->init();
+	display->flipScreenVertically();
+	display->setFont(ArialMT_Plain_10);
+	display->clear();
 
 	_forceUpdate = false;
 	_lastUpdate = millis();
 }
 
-void DisplayClass::ShowWellcome()
+void Display::ShowWellcome()
 {
-	display.clear();
-	display.drawXbm(0, 0, 128, 64, GRAPH_RACINGSOFT);
-	display.display();
+	display->clear();
+	display->drawXbm(0, 0, 128, 64, GRAPH_RACINGSOFT);
+	display->display();
 
 	_forceUpdate = false;
 	_lastUpdate = millis();
 }
 
-void DisplayClass::ForceRefresh()
+void Display::ForceRefresh()
 {
 	_forceUpdate = true;
 }
 
-void DisplayClass::Refresh()
+void Display::Refresh()
 {
 	unsigned long currentTime = millis();
 	unsigned long elapsedTime = abs(currentTime - _lastUpdate);
@@ -71,6 +71,3 @@ void DisplayClass::Refresh()
 		_lastUpdate = millis();
 	}
 }
-
-DisplayClass Display;
-

@@ -31,19 +31,20 @@
 	#include "WProgram.h"
 #endif
 
-class LoggerClass
+class Logger
 {
  protected:
 
-
  public:
+	 Logger(unsigned long baud);
 	 void init();
 	 void info(String info);
 	 void warn(String warn);
 	 void error(String error);
-};
 
-extern LoggerClass Logger;
+private:
+	unsigned long _baud;
+};
 
 #endif
 
