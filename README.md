@@ -33,10 +33,10 @@ SCL  ------ D1<br>
 SDA  ------ D2<br>
 <br>
 Uso:
-
-Paso 1: Pantalla de bienvenida.
-Paso 2: Calibración de mínimo. Dejamos el freno sin pulsar hasta que se obtenga la calibración de mínimo.
-Paso 3: Calibración de máximo. Pulsamos el freno hasta el fondo y volvemos a dejarlo en reposo.
-Paso 4: El programa comenzará a emular la salida analógica en función del valor de presión leído.
-
+<br>
+Paso 1: Pantalla de bienvenida.<br>
+Paso 2: Calibración de mínimo. Dejamos el freno sin pulsar hasta que se obtenga la calibración de mínimo.<br>
+Paso 3: Calibración de máximo. Pulsamos el freno hasta el fondo y volvemos a dejarlo en reposo.<br>
+Paso 4: El programa comenzará a emular la salida analógica en función del valor de presión leído.<br>
+<br>
 Si el programa en algún momento deja de detectar la señal del sensor de carga entrará en estado de error, dejando la salida analógica en su valor mínimo.
