@@ -26,7 +26,6 @@ PIN 8  -----> DigiPot A<br>
 PIN 9  -----> Wiper<br>
 PIN 10 -----> DigiPot B<br>
 <br>
-<br>
 SH1106      Wemos D1<br>
 GND  ------ GND<br>
 VCC  ------ 3.3v<br>
