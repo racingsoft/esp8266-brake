@@ -3,35 +3,35 @@ Conversor de señal para sustituir potenciometro mecánico por sensor de presió
 
 Esquema de conexionado:
 
-HX711         Wemos D1
-VCC           3.3v
-DAT           D3
-CLK           D4
-GND           GND
-
-AD5231        Wemos D1
-PIN 2  ------ D5
-PIN 3  ------ D7
-PIN 4  ------ D6
-PIN 5  ------ GND
-PIN 6  ------ GND
-PIN 7  ------ GND
-
-PIN 8  -----> DigiPot A
-Pin 9  -----> Wiper
-Pin 10 -----> DigiPot B
-
-PIN 11 ------ 3.3v
-PIN 12 ------ 3.3v
-PIN 13 ------ 3.3v
-PIN 14 ------ D8
-
-SH1106      Wemos D1
-GND  ------ GND
-VCC  ------ 3.3v
-SCL  ------ D1
-SDA  ------ D2
-
+HX711         Wemos D1<br>
+VCC --------- 3.3v<br>
+DAT --------- D3<br>
+CLK --------- D4<br>
+GND --------- GND<br>
+<br>
+AD5231        Wemos D1<br>
+PIN 2  ------ D5<br>
+PIN 3  ------ D7<br>
+PIN 4  ------ D6<br>
+PIN 5  ------ GND<br>
+PIN 6  ------ GND<br>
+PIN 7  ------ GND<br>
+<br>
+PIN 8  -----> DigiPot A<br>
+Pin 9  -----> Wiper<br>
+Pin 10 -----> DigiPot B<br>
+<br>
+PIN 11 ------ 3.3v<br>
+PIN 12 ------ 3.3v<br>
+PIN 13 ------ 3.3v<br>
+PIN 14 ------ D8<br>
+<br>
+SH1106      Wemos D1<br>
+GND  ------ GND<br>
+VCC  ------ 3.3v<br>
+SCL  ------ D1<br>
+SDA  ------ D2<br>
+<br>
 Uso:
 
 Paso 1: Pantalla de bienvenida.
