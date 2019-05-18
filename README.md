@@ -21,7 +21,7 @@ PIN 12 ------ 3.3v<br>
 PIN 13 ------ 3.3v<br>
 PIN 14 ------ D8<br>
 <br>
-Salida del AD5231 a resistencia variable del pedal de freno
+Salida del AD5231 a resistencia variable del pedal de freno<br>
 PIN 8  -----> DigiPot A<br>
 PIN 9  -----> Wiper<br>
 PIN 10 -----> DigiPot B<br>
