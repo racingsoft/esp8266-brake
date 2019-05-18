@@ -16,15 +16,16 @@ PIN 4  ------ D6<br>
 PIN 5  ------ GND<br>
 PIN 6  ------ GND<br>
 PIN 7  ------ GND<br>
-<br>
-PIN 8  -----> DigiPot A<br>
-Pin 9  -----> Wiper<br>
-Pin 10 -----> DigiPot B<br>
-<br>
 PIN 11 ------ 3.3v<br>
 PIN 12 ------ 3.3v<br>
 PIN 13 ------ 3.3v<br>
 PIN 14 ------ D8<br>
+<br>
+Salida del AD5231 a resistencia variable del pedal de freno
+PIN 8  -----> DigiPot A<br>
+PIN 9  -----> Wiper<br>
+PIN 10 -----> DigiPot B<br>
+<br>
 <br>
 SH1106      Wemos D1<br>
 GND  ------ GND<br>
