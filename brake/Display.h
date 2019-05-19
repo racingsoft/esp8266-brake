@@ -33,7 +33,6 @@
 
 #include <Wire.h>
 #include <SH1106Wire.h>
-#include <OLEDDisplayUi.h>
 #include <OLEDDisplayFonts.h>
 #include <OLEDDisplay.h>
 #include "Graphic.h"
@@ -49,12 +48,12 @@ class Display
  public:
 	Display(uint8_t address, uint8_t sda, uint8_t scl, OLEDDISPLAY_GEOMETRY geometry);
 	void Init();
-	void ShowWellcome();
 	void ForceRefresh();
 	void Refresh();
 
 private:
-	SH1106Wire* display;
+	void DrawFrameWellcome();
+	SH1106Wire* _display;
 };
 
 #endif

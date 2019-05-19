@@ -26,28 +26,21 @@
 
 #include "Display.h"
 
+
+
 Display::Display(uint8_t address, uint8_t sda, uint8_t scl, OLEDDISPLAY_GEOMETRY geometry = GEOMETRY_128_64)
 {
-	display = new SH1106Wire(address, sda, scl, geometry);
+	_display = new SH1106Wire(address, sda, scl, geometry);
 }
 
 void Display::Init()
 {
-	// Initialising the UI will init the display too.
-	display->init();
-	display->flipScreenVertically();
-	display->setFont(ArialMT_Plain_10);
-	display->clear();
+	_display->init();
+	_display->flipScreenVertically();
+	_display->setFont(ArialMT_Plain_10);
+	_display->clear();
 
-	_forceUpdate = false;
-	_lastUpdate = millis();
-}
-
-void Display::ShowWellcome()
-{
-	display->clear();
-	display->drawXbm(0, 0, 128, 64, GRAPH_RACINGSOFT);
-	display->display();
+	DrawFrameWellcome();
 
 	_forceUpdate = false;
 	_lastUpdate = millis();
@@ -66,8 +59,15 @@ void Display::Refresh()
 	if (_forceUpdate || elapsedTime > REFRESH_TIME)
 	{
 		// Dibujamos pantalla
+		DrawFrameWellcome();
+		_display->display();
 
 		_forceUpdate = false;
 		_lastUpdate = millis();
 	}
+}
+
+void Display::DrawFrameWellcome()
+{
+	_display->drawXbm(0, 0, 128, 64, GRAPH_RACINGSOFT);
 }
