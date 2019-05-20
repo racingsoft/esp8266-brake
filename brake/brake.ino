@@ -61,7 +61,6 @@ void setup() {
 
 	logger.info("INITIALIZING DISPLAY");
 	display.Init();
-	display.ShowWellcome();
 	
 	logger.info("INITIALIZING BRAKESENSOR");
 	brakeSensor.Init();
@@ -71,7 +70,6 @@ void setup() {
 
 	logger.info("MIN CALIBRATION");
 	brakeState = MIN_CALIBRATION;
-	display.ForceRefresh();
 }
 
 void loop() {

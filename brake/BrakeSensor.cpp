@@ -32,7 +32,8 @@ BrakeSensor::BrakeSensor(uint8_t cs, uint8_t sck, Logger* logger)
 	_sck = sck;
 	_logger = logger;
 	_presionSensor = new HX711();
-	_average = new Average<long>(_MAX_READS);
+	_calibrationBuffer = new Average<long>(_MAX_CALIBRATION_READS);
+	_outputBuffer = new Average<long>(_MAX_OUTPUT_READS);
 }
 
 void BrakeSensor::Init()
@@ -58,25 +59,25 @@ void BrakeSensor::DoMinCalibration()
 	// Min Calibration
 	if (_sensorState == READY )
 	{
-		if (_average->getCount() < _MAX_READS)
+		if (_calibrationBuffer->getCount() < _MAX_CALIBRATION_READS)
 		{
 			// Read sensor average
 			_currentValue = _presionSensor->read_average(10);
 
 			// Mean & Delta
-			long mean = (long)_average->mean();
+			long mean = (long)_calibrationBuffer->mean();
 			long delta = (long)((float)mean * _DELTA_PERCENT);
 
 			if (mean == 0 || (mean !=0 && abs(_currentValue - mean) < delta ))
 			{
-				_average->push(_currentValue);
+				_calibrationBuffer->push(_currentValue);
 			}
 		}
 		else
 		{
 			// End Min Calibration
-			_minValue = (long)_average->mean();
-			_average->clear();
+			_minValue = (long)_calibrationBuffer->mean();
+			_calibrationBuffer->clear();
 			_minCalibrationDone = true;
 		}
 	}
@@ -101,27 +102,27 @@ void BrakeSensor::DoMaxCalibration()
 	// Max Calibration
 	if (_sensorState == READY)  
 	{
-		if (_maxReads < _MAX_READS)
+		if (_maxReads < _MAX_CALIBRATION_READS)
 		{
 			// Read sensor average
 			_currentValue = _presionSensor->read_average(10);
 			long delta = (long)((float)_minValue * _DELTA_PERCENT);
-			int count = _average->getCount();
+			int count = _calibrationBuffer->getCount();
 			
 			if (count == 0)
 			{
 				if (abs(_currentValue - _minValue) > delta)
 				{
-					_average->push(_currentValue);
+					_calibrationBuffer->push(_currentValue);
 				}
 			}
 			else
 			{
-				long previous = _average->get(count - 1);
+				long previous = _calibrationBuffer->get(count - 1);
 				if (_currentValue > previous)
 				{
 					// Store value
-					_average->push(_currentValue);
+					_calibrationBuffer->push(_currentValue);
 				}
 				else
 				{
@@ -135,8 +136,8 @@ void BrakeSensor::DoMaxCalibration()
 		else
 		{
 			// End Max Calibration
-			_maxValue = _average->maximum();
-			_average->clear();
+			_maxValue = _calibrationBuffer->maximum();
+			_calibrationBuffer->clear();
 			_maxReads = 0;
 			_maxCalibrationDone = true;
 		}
@@ -170,7 +171,8 @@ long BrakeSensor::Read()
 {
 	// Reading uint16_t value
 	_currentValue = _presionSensor->read();
-	return _MapValue(_currentValue);
+	_outputBuffer->push(_currentValue);
+	return _MapValue(_outputBuffer->mean());
 }
 
 long BrakeSensor::MinValue()
