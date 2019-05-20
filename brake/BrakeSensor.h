@@ -56,16 +56,18 @@ class BrakeSensor
 	long MaxValue();
 
 private:
-	const int _MAX_READS = 50;
+	const int _MAX_CALIBRATION_READS = 50;
 	const float _DELTA_PERCENT = 0.20;
 	const long _MIN_CALIBRATION_DEFAULT_VALUE = 0;
 	const long _MAX_CALIBRATION_DEFAULT_VALUE = 0;
+	const int _MAX_OUTPUT_READS = 10;
 
 	uint8_t _cs;
 	uint8_t _sck;
 
 	HX711* _presionSensor;
-	Average<long>* _average;
+	Average<long>* _calibrationBuffer;
+	Average<long>* _outputBuffer;
 	Logger* _logger;
 
 	SensorStates _sensorState;
